@@ -1,6 +1,13 @@
 import axiosInstance from "../utils/axiosInstance";
 import { API_PATHS } from "../utils/apiPaths";
 
+const getErrorMessage = (error, defaultMsg) => {
+  const data = error.response?.data;
+  if (!data) return { message: defaultMsg };
+  const msg = data.error || data.message || defaultMsg;
+  return { ...data, message: typeof msg === "string" ? msg : JSON.stringify(msg) };
+};
+
 // Login
 const login = async (email, password) => {
   try {
@@ -14,9 +21,7 @@ const login = async (email, password) => {
 
     return response.data;
   } catch (error) {
-    throw error.response?.data || {
-      message: "An unknown error occurred",
-    };
+    throw getErrorMessage(error, "Invalid email or password");
   }
 };
 
@@ -30,9 +35,7 @@ const register = async (userData) => {
 
     return response.data;
   } catch (error) {
-    throw error.response?.data || {
-      message: "An unknown error occurred",
-    };
+    throw getErrorMessage(error, "Registration failed");
   }
 };
 
@@ -45,9 +48,7 @@ const getProfile = async () => {
 
     return response.data;
   } catch (error) {
-    throw error.response?.data || {
-      message: "An unknown error occurred",
-    };
+    throw getErrorMessage(error, "Failed to fetch profile");
   }
 };
 
@@ -61,9 +62,7 @@ const updateProfile = async (userData) => {
 
     return response.data;
   } catch (error) {
-    throw error.response?.data || {
-      message: "An unknown error occurred",
-    };
+    throw getErrorMessage(error, "Failed to update profile");
   }
 };
 
@@ -77,9 +76,7 @@ const changePassword = async (passwords) => {
 
     return response.data;
   } catch (error) {
-    throw error.response?.data || {
-      message: "An unknown error occurred",
-    };
+    throw getErrorMessage(error, "Failed to change password");
   }
 };
 
